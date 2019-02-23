@@ -44,69 +44,96 @@ let startBtn = document.getElementById('start'),
         dayValue.value = new Date(Date.parse(time)).getDate();
     });
 
-    approveBtn.addEventListener('click' , function(){
-        let sum = 0;
-
-        for (i = 0; i < expensesInputs.length ; i++){
-            let firstQ = expensesInputs[i].value,
-                secondQ = expensesInputs[++i].value;
-        
-            if ( (typeof(firstQ)) === 'string' && (typeof(firstQ)) != null && (typeof(secondQ)) != null && firstQ != "" && 
-                secondQ != "" && firstQ.length < 50) {
-                appData.expenses[firstQ] = secondQ;
-                sum += +secondQ;
-            }
-            else {
-                i = i-1 ;
-            }
+    approveBtn.addEventListener('click' , function(event){
+        if (appData.budget == undefined || appData.timeData == undefined) {
+            event.preventDefault();
         }
+        else{
+            let sum = 0;
 
-        expensesValue.textContent = sum;
+            for (i = 0; i < expensesInputs.length ; i++){
+                let firstQ = expensesInputs[i].value,
+                    secondQ = expensesInputs[++i].value;
+            
+                if ( (typeof(firstQ)) === 'string' && (typeof(firstQ)) != null && (typeof(secondQ)) != null && firstQ != "" && 
+                    secondQ != "" && firstQ.length < 50) {
+                    appData.expenses[firstQ] = secondQ;
+                    sum += +secondQ;
+                }
+                else {
+                    i = i-1 ;
+                }
+            }
+    
+            expensesValue.textContent = sum;
+        }
     });
 
     optionalexpensesBtn.addEventListener('click', function(){
-        for (let i = 0; i < optionalExpensesItem.length; i++){
-            let opt = optionalExpensesItem[i].value;
-            appData.optionalExpenses[i] = opt;
-            optionalExpensesValue.textContent += appData.optionalExpenses[i] + " ";
-        }
-    });
-
-    calculateBtn.addEventListener('click', function(){
-        if (appData.budget != undefined){
-            appData.dayBudget = (appData.budget/30).toFixed(); 
-            daybudgetValue.textContent = appData.dayBudget;
-
-            if (appData.dayBudget < 100){
-                levelValue.textContent = 'Минимальный уровень достатка';
-            }
-            else if(appData.dayBudget > 100 && appData.dayBudget < 2000){
-                levelValue.textContent = 'Средний уровень достатка';
-            }
-            else if(appData.dayBudget > 2000){
-                levelValue.textContent = 'Высокий уровень достатка';
-            }
-            else{
-                levelValue.textContent = 'Произошла ошибка';
-            }
+        if (appData.budget == undefined || appData.timeData == undefined) {
+            event.preventDefault();
         }
         else{
-            daybudgetValue.textContent = 'Произошла ошибка';
+            for (let i = 0; i < optionalExpensesItem.length; i++){
+                let opt = optionalExpensesItem[i].value;
+                appData.optionalExpenses[i] = opt;
+                optionalExpensesValue.textContent += appData.optionalExpenses[i] + " ";
+            }
+        } 
+    });
+    calculateBtn.addEventListener('click', function(){
+        if (appData.budget == undefined || appData.timeData == undefined) {
+            event.preventDefault();
+        }
+        else{
+            if (appData.budget != undefined){
+                let sum ;
+                expensesValue.innerHTML = Number(expensesValue.innerHTML);
+                sum = expensesValue.innerHTML;
+                appData.dayBudget = ((appData.budget - sum)/30).toFixed(); 
+                daybudgetValue.textContent = appData.dayBudget;
+    
+                if (appData.dayBudget < 100){
+                    levelValue.textContent = 'Минимальный уровень достатка';
+                }
+                else if(appData.dayBudget > 100 && appData.dayBudget < 2000){
+                    levelValue.textContent = 'Средний уровень достатка';
+                }
+                else if(appData.dayBudget > 2000){
+                    levelValue.textContent = 'Высокий уровень достатка';
+                }
+                else{
+                    levelValue.textContent = 'Произошла ошибка';
+                }
+            }
+            else{
+                daybudgetValue.textContent = 'Произошла ошибка';
+            }
         }
     });
 
     chooseIncome.addEventListener('input', function(){
-        let items = chooseIncome.value;
-        appData.income = items.split(", ");
-        incomeValue.textContent = appData.income;
+        if (appData.budget == undefined || appData.timeData == undefined) {
+            event.preventDefault();
+        }
+        else{
+            let items = chooseIncome.value;
+            appData.income = items.split(", ");
+            incomeValue.textContent = appData.income;
+        }
     });
 
     checkSavings.addEventListener('click' , function(){
-        if (appData.savings == true){
-            appData.savings = false;
+        if (appData.budget == undefined || appData.timeData == undefined) {
+            event.preventDefault();
         }
         else{
-            appData.savings = true;
+            if (appData.savings == true){
+                appData.savings = false;
+            }
+            else{
+                appData.savings = true;
+            }
         }
     });
 
@@ -144,3 +171,4 @@ let startBtn = document.getElementById('start'),
         income : [],
         savings : false
     };
+ 
